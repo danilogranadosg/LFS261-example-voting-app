@@ -39,8 +39,7 @@ fingerprint: true
             script{
               docker.withRegistry('https://index.docker.io/v1/',
 'dockerlogin'){
-                  def workerImage = docker.build("dailogranadosg/worker:v$
-{env.BUILD_ID}", "./worker")
+                  def workerImage = docker.build("danilogranadosg/worker:v${env.BUILD_ID}", "./worker")
                   workerImage.push()
                   workerImage.push("latest")
               } 
