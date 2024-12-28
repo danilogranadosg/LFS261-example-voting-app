@@ -8,6 +8,12 @@ pipeline {
         when{ 
           changeset "**/result/**"
         }
+            agent{
+                docker{
+                    image 'node:18-slim'
+                    args '--user root'
+                    }
+                    }
           steps{
               echo 'Compiling result app'
               dir('result'){
@@ -19,6 +25,13 @@ pipeline {
         when{ 
           changeset "**/result/**"
         }
+            agent{
+                docker{
+                    image 'node:18-slim'
+                    args '--user root'
+                    }
+                    }
+
           steps{
               echo 'Running Unit Tests on result app'
               dir('result'){
@@ -40,7 +53,7 @@ pipeline {
                   def resultImage = docker.build("danilogranadosg/result:v${env.BUILD_ID}", "./result")
                   resultImage.push()
                   resultImage.push("${env.BRANCH_NAME}")
-                  resuktImage.push("latest")
+                  resultImage.push("latest")
               }
             }
           }
