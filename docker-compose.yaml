@@ -7,7 +7,8 @@ networks:
 
 services:
   vote:
-    image: xxxxx/vote:latest
+    image: danilogranadosg/vote:latest
+    build: ./vote
     ports:
       - 5000:80
     depends_on:
@@ -19,8 +20,8 @@ services:
     image: redis:alpine
     networks:
       - instavote
-      
-  db:
+
+ db:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: "postgres"
@@ -32,19 +33,22 @@ services:
       test: /healthchecks/postgres.sh
       interval: "5s"
     networks:
-      - instavote  
-      
+      - instavote
+
+
   result:
-    image: xxxxx/result:latest
+    image: danilogranadosg/result:latest
+    build: ./result
     ports:
-      - 5001:4000
+      - 5001:80
     depends_on:
       - db
     networks:
       - instavote
 
   worker:
-    image: xxxxx/worker:latest
+    image: danilogranadosg/worker:latest
+    build: ./worker
     depends_on:
       - redis
       - db
