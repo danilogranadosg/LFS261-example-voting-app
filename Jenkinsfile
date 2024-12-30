@@ -12,9 +12,6 @@ pipeline {
         }
 
       }
-      when {
-        changeset '**/worker/**'
-      }
       steps {
         echo 'Compiling worker app..'
         dir(path: 'worker') {
@@ -31,9 +28,6 @@ pipeline {
           args '-v $HOME/.m2:/root/.m2'
         }
 
-      }
-      when {
-        changeset '**/worker/**'
       }
       steps {
         echo 'Running Unit Tets on worker app.'
@@ -54,7 +48,6 @@ pipeline {
       }
       when {
         branch 'master'
-        changeset '**/worker/**'
       }
       steps {
         echo 'Packaging worker app'
@@ -69,7 +62,6 @@ pipeline {
     stage('worker-docker-package') {
       agent any
       when {
-        changeset '**/worker/**'
         branch 'master'
       }
       steps {
@@ -93,9 +85,6 @@ pipeline {
         }
 
       }
-      when {
-        changeset '**/result/**'
-      }
       steps {
         echo 'Compiling result app..'
         dir(path: 'result') {
@@ -112,9 +101,6 @@ pipeline {
         }
 
       }
-      when {
-        changeset '**/result/**'
-      }
       steps {
         echo 'Running Unit Tests on result app..'
         dir(path: 'result') {
@@ -128,7 +114,6 @@ pipeline {
     stage('result-docker-package') {
       agent any
       when {
-        changeset '**/result/**'
         branch 'master'
       }
       steps {
@@ -152,9 +137,6 @@ pipeline {
         }
 
       }
-      when {
-        changeset '**/vote/**'
-      }
       steps {
         echo 'Compiling vote app.'
         dir(path: 'vote') {
@@ -170,16 +152,12 @@ pipeline {
           image 'python:2.7.16-slim'
           args '--user root'
         }
-
-      }
-      when {
-        changeset '**/vote/**'
       }
       steps {
         echo 'Running Unit Tests on vote app.'
         dir(path: 'vote') {
           sh 'pip install -r requirements.txt'
-          sh 'nosetests -v'
+          sh 'nose2 -v'
         }
 
       }
@@ -187,10 +165,7 @@ pipeline {
 
     stage('vote integration'){ 
     agent any 
-    when{ 
-      changeset "**/vote/**" 
-      branch 'master' 
-    } 
+
     steps{ 
       echo 'Running Integration Tests on vote app' 
       dir('vote'){ 
@@ -202,6 +177,9 @@ pipeline {
 
     stage('vote-docker-package') {
       agent any
+      when{ 
+        branch 'master' 
+      } 	  
       steps {
         echo 'Packaging vote app with docker'
         script {
@@ -218,3 +196,4 @@ pipeline {
     }
   }
 }
+
