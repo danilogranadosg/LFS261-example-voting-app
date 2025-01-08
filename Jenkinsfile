@@ -239,6 +239,9 @@ pipeline {
     }
     stage('Trigger deployment') {
          agent any
+         when {
+           branch 'master'
+         }
          environment{
            def GIT_COMMIT = "${env.GIT_COMMIT}"
          }
